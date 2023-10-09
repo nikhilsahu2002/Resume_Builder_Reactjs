@@ -1,302 +1,358 @@
-import React, { useEffect, useState } from "react";
-import "./resume.css";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
+import {
+  AtSign,
+  Calendar,
+  GitHub,
+  Linkedin,
+  MapPin,
+  Paperclip,
+  Phone,
+} from "react-feather";
 
-const Resume = (props) => {
-  const WorkExpSection = (
-    <div className={`${"section"} ${"workExp"}`}>
-      <div className="sectionTitle">Work Experience</div>
-      <div className="content">
-        <div className="item">
-          <p className="title1">Full Stack Dev</p>
-          <p className="subtitle">Company Name</p>
-          <div className="date">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-calendar">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            1/10/2023 - 2/11/2023
-          </div>
-          <a className="link1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-paperclip">
-              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-            </svg>
-            https://www.google.com
-          </a>
-          <a className="link1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-github">
-              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-            </svg>
-            https://www.github.com
-          </a>
-          <p className="location">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-map-pin">
-              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-              <circle cx="12" cy="10" r="3"></circle>
-            </svg>
-            Remote
-          </p>
-          <p className="overview">
-            This Work Exp Is Dummy Work Exp With Nothing
-          </p>
-          <ul className="points">
-            <li className="point">Point 1</li>
-            <li className="point">Point 2</li>
-            <li className="point">Point 3</li>
-            <li className="point">Point 4</li>
-          </ul>
+import styles from "./Resume.module.css";
+
+const Resume = forwardRef((props, ref) => {
+  const information = props.information;
+  const sections = props.sections;
+  const containerRef = useRef();
+
+  const [columns, setColumns] = useState([[], []]);
+  const [source, setSource] = useState("");
+  const [target, seTarget] = useState("");
+
+  const info = {
+    workExp: information[sections.workExp],
+    project: information[sections.project],
+    achievement: information[sections.achievement],
+    education: information[sections.education],
+    basicInfo: information[sections.basicInfo],
+    summary: information[sections.summary],
+    other: information[sections.other],
+  };
+
+  const getFormattedDate = (value) => {
+    if (!value) return "";
+    const date = new Date(value);
+
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+  };
+
+  const sectionDiv = {
+    [sections.workExp]: (
+      <div
+        key={"workexp"}
+        draggable
+        onDragOver={() => seTarget(info.workExp?.id)}
+        onDragEnd={() => setSource(info.workExp?.id)}
+        className={`${styles.section} ${
+          info.workExp?.sectionTitle ? "" : styles.hidden
+        }`}
+      >
+        <div className={styles.sectionTitle}>{info.workExp.sectionTitle}</div>
+        <div className={styles.content}>
+          {info.workExp?.details?.map((item) => (
+            <div className={styles.item} key={item.title}>
+              {item.title ? (
+                <p className={styles.title}>{item.title}</p>
+              ) : (
+                <span />
+              )}
+              {item.companyName ? (
+                <p className={styles.subTitle}>{item.companyName}</p>
+              ) : (
+                <span />
+              )}
+              {item.certificationLink ? (
+                <a className={styles.link} href={item.certificationLink}>
+                  <Paperclip />
+                  {item.certificationLink}
+                </a>
+              ) : (
+                <span />
+              )}
+              {item.startDate && item.endDate ? (
+                <div className={styles.date}>
+                  <Calendar /> {getFormattedDate(item.startDate)}-
+                  {getFormattedDate(item.endDate)}
+                </div>
+              ) : (
+                <div />
+              )}
+              {item.location ? (
+                <p className={styles.date}>
+                  <MapPin /> Remote
+                </p>
+              ) : (
+                <span />
+              )}
+              {item.points?.length > 0 ? (
+                <ul className={styles.points}>
+                  {item.points?.map((elem, index) => (
+                    <li className={styles.point} key={elem + index}>
+                      {elem}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span />
+              )}
+            </div>
+          ))}
         </div>
       </div>
-    </div>
-  );
-
-  const projectSection = (
-    <div className={`${"section"} ${"project"}`}>
-      <div className="sectionTitle">Project</div>
-      <div className="content">
-        <div className="item">
-          <p className="title1">Full Stack Dev</p>
-          <p className="subtitle">Company Name</p>
-          <a className="link1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-paperclip">
-              <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
-            </svg>
-            https://www.google.com
-          </a>
-          <div className="date">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-calendar">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            1/10/2023 - 2/11/2023
-          </div>
-          </div>
-          </div>
-    </div>
-  );
-
-  const educationSection = (
-    <div className={`${"section"} ${"education"}`}>
-      <div className="sectionTitle">Education Section</div>
-      <div className="content">
-        <div className="item">
-          <p className="title1">MCA</p>
-          <p className="subtitle">United Univestiy</p>
-          <div className="date">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="feather feather-calendar">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-            1/10/2023 - 2/11/2023
-          </div>
+    ),
+    [sections.project]: (
+      <div
+        key={"project"}
+        draggable
+        onDragOver={() => seTarget(info.project?.id)}
+        onDragEnd={() => setSource(info.project?.id)}
+        className={`${styles.section} ${
+          info.project?.sectionTitle ? "" : styles.hidden
+        }`}
+      >
+        <div className={styles.sectionTitle}>{info.project.sectionTitle}</div>
+        <div className={styles.content}>
+          {info.project?.details?.map((item) => (
+            <div className={styles.item}>
+              {item.title ? (
+                <p className={styles.title}>{item.title}</p>
+              ) : (
+                <span />
+              )}
+              {item.link ? (
+                <a className={styles.link} href={item.link}>
+                  <Paperclip />
+                  {item.link}
+                </a>
+              ) : (
+                <span />
+              )}
+              {item.github ? (
+                <a className={styles.link} href={item.github}>
+                  <GitHub />
+                  {item.github}
+                </a>
+              ) : (
+                <span />
+              )}
+              {item.overview ? (
+                <p className={styles.overview}>{item.overview} </p>
+              ) : (
+                <span />
+              )}
+              {item.points?.length > 0 ? (
+                <ul className={styles.points}>
+                  {item.points?.map((elem, index) => (
+                    <li className={styles.point} key={elem + index}>
+                      {elem}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <span />
+              )}
+            </div>
+          ))}
         </div>
       </div>
-    </div>
-  );
-
-  const achievementsSection = (
-    <div className={`${"section"} ${"achievements"}`}>
-      <div className="sectionTitle">Achievements</div>
-      <ul className="numbered">
-        <li>achievement 1</li>
-        <li>achievement 2</li>
-        <li>achievement 3</li>
-        <li>achievement 4</li>
-        <li>achievement 5</li>
-      </ul>
-    </div>
-  );
-
-  const SummarySection = (
-    <div className={`${"section"} ${"Summary"}`}>
-      <div className="sectionTitle">Summary</div>
-      <div className="content">
-        <div className="overview">
-            this is dummy basic summary
+    ),
+    [sections.education]: (
+      <div
+        key={"education"}
+        draggable
+        onDragOver={() => seTarget(info.education?.id)}
+        onDragEnd={() => setSource(info.education?.id)}
+        className={`${styles.section} ${
+          info.education?.sectionTitle ? "" : styles.hidden
+        }`}
+      >
+        <div className={styles.sectionTitle}>
+          {info.education?.sectionTitle}
+        </div>
+        <div className={styles.content}>
+          {info.education?.details?.map((item) => (
+            <div className={styles.item}>
+              {item.title ? (
+                <p className={styles.title}>{item.title}</p>
+              ) : (
+                <span />
+              )}
+              {item.college ? (
+                <p className={styles.subTitle}>{item.college}</p>
+              ) : (
+                <span />
+              )}
+              {item.startDate && item.endDate ? (
+                <div className={styles.date}>
+                  <Calendar /> {getFormattedDate(item.startDate)} -
+                  {getFormattedDate(item.endDate)}
+                </div>
+              ) : (
+                ""
+              )}
+            </div>
+          ))}
         </div>
       </div>
-    </div>
-  );
-
-  const otherSection = (
-    <div className={`${"section"} ${"other"}`}>
-      <div className="sectionTitle">Other</div>
-      <div className="content">
-        <div className="overview">
-            this is dummy basic summary
+    ),
+    [sections.achievement]: (
+      <div
+        key={"achievement"}
+        draggable
+        onDragOver={() => seTarget(info.achievement?.id)}
+        onDragEnd={() => setSource(info.achievement?.id)}
+        className={`${styles.section} ${
+          info.achievement?.sectionTitle ? "" : styles.hidden
+        }`}
+      >
+        <div className={styles.sectionTitle}>
+          {info.achievement?.sectionTitle}
+        </div>
+        <div className={styles.content}>
+          {info.achievement?.points?.length > 0 ? (
+            <ul className={styles.numbered}>
+              {info.achievement?.points?.map((elem, index) => (
+                <li className={styles.point} key={elem + index}>
+                  {elem}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <span />
+          )}
         </div>
       </div>
-    </div>
-  );
+    ),
+    [sections.summary]: (
+      <div
+        key={"summary"}
+        draggable
+        onDragOver={() => seTarget(info.summary?.id)}
+        onDragEnd={() => setSource(info.summary?.id)}
+        className={`${styles.section} ${
+          info.summary?.sectionTitle ? "" : styles.hidden
+        }`}
+      >
+        <div className={styles.sectionTitle}>{info.summary?.sectionTitle}</div>
+        <div className={styles.content}>
+          <p className={styles.overview}>{info.summary?.detail}</p>
+        </div>
+      </div>
+    ),
+    [sections.other]: (
+      <div
+        key={"other"}
+        draggable
+        onDragOver={() => seTarget(info.other?.id)}
+        onDragEnd={() => setSource(info.other?.id)}
+        className={`${styles.section} ${
+          info.other?.sectionTitle ? "" : styles.hidden
+        }`}
+      >
+        <div className={styles.sectionTitle}>{info.other?.sectionTitle}</div>
+        <div className={styles.content}>
+          <p className={styles.overview}>{info?.other?.detail}</p>
+        </div>
+      </div>
+    ),
+  };
 
-  const [columns, setColumns] = useState([
-    [projectSection, educationSection, SummarySection],
-    [WorkExpSection, achievementsSection, otherSection],
-  ]);
+  const swapSourceTarget = (source, target) => {
+    if (!source || !target) return;
+    const tempColumns = [[...columns[0]], [...columns[1]]];
+
+    let sourceRowIndex = tempColumns[0].findIndex((item) => item === source);
+    let sourceColumnIndex = 0;
+    if (sourceRowIndex < 0) {
+      sourceColumnIndex = 1;
+      sourceRowIndex = tempColumns[1].findIndex((item) => item === source);
+    }
+
+    let targetRowIndex = tempColumns[0].findIndex((item) => item === target);
+    let targetColumnIndex = 0;
+    if (targetRowIndex < 0) {
+      targetColumnIndex = 1;
+      targetRowIndex = tempColumns[1].findIndex((item) => item === target);
+    }
+
+    const tempSource = tempColumns[sourceColumnIndex][sourceRowIndex];
+    tempColumns[sourceColumnIndex][sourceRowIndex] =
+      tempColumns[targetColumnIndex][targetRowIndex];
+
+    tempColumns[targetColumnIndex][targetRowIndex] = tempSource;
+
+    setColumns(tempColumns);
+  };
 
   useEffect(() => {
     setColumns([
-      [projectSection, educationSection, SummarySection],
-      [WorkExpSection, achievementsSection, otherSection],
+      [sections.project, sections.education, sections.summary],
+      [sections.workExp, sections.achievement, sections.other],
     ]);
   }, []);
 
+  useEffect(() => {
+    swapSourceTarget(source, target);
+  }, [source]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!props.activeColor || !container) return;
+
+    container.style.setProperty("--color", props.activeColor);
+  }, [props.activeColor]);
+
   return (
-    <div className="container6">
-      <div className="header6">
-        <p className="heading6">Name</p>
-        <p className="subheading6">Blockchain Developer</p>
-        <div className="links">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="19"
-            height="19"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-at-sign">
-            <circle cx="12" cy="12" r="4"></circle>
-            <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>
-          </svg>
-          <a className="link">example@gmail.com</a>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="19"
-            height="19"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-phone">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-          </svg>
-          <a className="link">Phone</a>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="19"
-            height="19"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-linkedin">
-            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-            <rect x="2" y="9" width="4" height="12"></rect>
-            <circle cx="4" cy="4" r="2"></circle>
-          </svg>
-          <a className="link">http://linkedin.in//feed</a>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="19"
-            height="19"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="feather feather-github">
-            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-          </svg>
-          <a className="link">http://github/nikhilsahu</a>
+    <div ref={ref}>
+      <div ref={containerRef} className={styles.container}>
+        <div className={styles.header}>
+          <p className={styles.heading}>{info.basicInfo?.detail?.name}</p>
+          <p className={styles.subHeading}>{info.basicInfo?.detail?.title}</p>
+
+          <div className={styles.links}>
+            {info.basicInfo?.detail?.email ? (
+              <a className={styles.link} type="email">
+                <AtSign /> {info.basicInfo?.detail?.email}
+              </a>
+            ) : (
+              <span />
+            )}
+            {info.basicInfo?.detail?.phone ? (
+              <a className={styles.link}>
+                <Phone /> {info.basicInfo?.detail?.phone}
+              </a>
+            ) : (
+              <span />
+            )}
+            {info.basicInfo?.detail?.linkedin ? (
+              <a className={styles.link}>
+                <Linkedin /> {info.basicInfo?.detail?.linkedin}
+              </a>
+            ) : (
+              <span />
+            )}
+            {info.basicInfo?.detail?.github ? (
+              <a className={styles.link}>
+                <GitHub /> {info.basicInfo?.detail?.github}
+              </a>
+            ) : (
+              <span />
+            )}
+          </div>
         </div>
-      </div>
-      <div className="main2">
-        <div className="col1">
-          {columns[0].map((section, index) => (
-            <div key={index}>{section}</div>
-          ))}
-        </div>
-        <div className="col2">
-          {columns[1].map((section, index) => (
-            <div key={index}>{section}</div>
-          ))}
+
+        <div className={styles.main}>
+          <div className={styles.col1}>
+            {columns[0].map((item) => sectionDiv[item])}
+          </div>
+          <div className={styles.col2}>
+            {columns[1].map((item) => sectionDiv[item])}
+          </div>
         </div>
       </div>
     </div>
   );
-};
+});
 
 export default Resume;

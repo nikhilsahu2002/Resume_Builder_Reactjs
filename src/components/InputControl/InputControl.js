@@ -1,10 +1,11 @@
-import React from 'react';
-import './InputControl.css';
+import React from "react";
 
-const InputControl = ({ label, ...props }) => {
+import styles from "./InputControl.module.css";
+
+function InputControl({ label, ...props }) {
   return (
-    <div className='container3'>
-      {label && <label htmlFor="">{label}</label>}
+    <div className={styles.container}>
+      {label && <label>{label}</label>}
       <input type="text" {...props} />
     </div>
   );
