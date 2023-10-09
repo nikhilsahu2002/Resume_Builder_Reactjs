@@ -1,0 +1,132 @@
+.container6{
+    min-width: 500px;
+    flex: 1.2;
+    height: fit-content;
+    max-width: 850px;
+    margin: 0 auto;
+    min-height: 900px;
+    margin-top: 20px;
+    box-shadow: 1px 1px 3px 2px rgba(0, 0, 0, 0.1);
+    --color:rgb(53, 53, 145);
+    /* gap: 30px; */
+    padding: 30px;
+}
+
+.header6{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;    
+}
+.heading6{
+    font-size: 2.7rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.subheading6{
+    color: var(--color);
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.links{
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    row-gap: 10px;
+}
+
+.link{
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap :5;
+    cursor: pointer;
+    font-family: monospace;
+}
+
+ svg{
+    color: var(--color);
+    height: 16px;
+    width: 16px;
+}
+.main2{
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.col1{
+    flex: 1.3;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+.col2{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.sectionTitle{
+    font-size: 1.4rem;
+    font-weight: bold;
+    width: auto;
+    border-bottom: 2px solid var(--color);
+}
+
+.content{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.content .item{
+    border-bottom: 1px dotted lightgray;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.content .item :last-child{
+    border-bottom: none;
+
+}
+
+.title1{
+    font-weight: 500;
+    font-size: 1.3rem;
+    line-height: 1.8rem;
+} 
+
+.subtitle{
+    font-weight: bold;
+    color: var(--color);
+    font-size: 0.9;
+
+}
+
+ .link1,.location{
+    display: flex;
+    gap: 5px;
+    font-size: 0.9;
+    cursor: pointer;
+    color: var(--color) ;
+}
+ .link1 svg{
+    height: 14px;
+    width: 14px;
+}
+
+.date,.location{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    font-size: 0.9rem;
+}
+.date svg,.location svg{
+    height: 14px;
+    width: 14px;
+}

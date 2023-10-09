@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./Body.css";
 import Arrow from "../../Assets/Arrow.png";
 import Editor from "../Editor/Editor";
+import Resume from "../Resume/Resume";
 
 const Body = () => {
   const colors = ["black", "yellow", "green", "purple", "blue"];
@@ -18,42 +19,45 @@ const Body = () => {
   const [ResumeInfo,setResumeInfo]=useState({
     [sections.BasicInfo]:{
       id : sections.BasicInfo,
-      title : sections.BasicInfo,
+      sectionTitle : sections.BasicInfo,
       detail:{},
     },
 
     [sections.WorkExp] : {
       id : sections.WorkExp,
-      title : sections.WorkExp,
+      sectionTitle : sections.WorkExp,
       detail:[],
     },
     [sections.Achievements]:{
       id : sections.Achievements,
-      title : sections.Achievements,
+      sectionTitle : sections.Achievements,
       Points: [],
     },
     [sections.Education]:{
       id:sections.Education,
-      title:sections.Education,
+      sectionTitle:sections.Education,
       detail:[],
     },
     [sections.Project]:{
       id:sections.Project,
-      title:sections.Project,
+      sectionTitle:sections.Project,
       detail:[],
   },
   [sections.Summary]:{
     id: sections.Summary,
-    title:sections.Summary,
+    sectionTitle:sections.Summary,
     detail:"",
   },
   [sections.Other]:{
     id: sections.Other,
-    title:sections.Other,
+    sectionTitle:sections.Other,
     detail:"",
   },
 
   })
+  useEffect(()=>{
+    // console.log(ResumeInfo);
+  },[ResumeInfo]);
   
 
   return (
@@ -74,7 +78,8 @@ const Body = () => {
         </button>
       </div>
       <div className="main"> 
-            <Editor sections={sections} Information={ResumeInfo} />
+          <Editor sections={sections} Information={ResumeInfo} setInformation={setResumeInfo} />
+          <Resume />
       </div>
     </div>
   );
